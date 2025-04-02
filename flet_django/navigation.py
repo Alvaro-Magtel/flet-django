@@ -1,17 +1,19 @@
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import Optional, List, Callable
+from typing import Callable, List, Optional
 
 import flet as ft
 from flet_core import Control
 
-from flet_django.types import PAGE_CLASS, DESTINATION_CLASS
+from flet_django.types import DESTINATION_CLASS, PAGE_CLASS
 
 
 @dataclass
 class Navigare(ABC):
     page: PAGE_CLASS
-    destinations: Optional[List[DESTINATION_CLASS]] = field(default_factory=list)
+    destinations: Optional[List[DESTINATION_CLASS]] = field(
+        default_factory=list
+    )
     selected_index: Optional[int] = None
 
     def on_change(self) -> Callable:
@@ -46,13 +48,16 @@ class Navigare(ABC):
                 # for a case if selected index is not set on beginning
                 # recognize current view and set it as selected
                 index += 1
-                if self.selected_index is None and destiny.route == self.page.route:
+                if (
+                    self.selected_index is None
+                    and destiny.route == self.page.route
+                ):
                     self.selected_index = index
 
         new_kwargs = dict(
             on_change=self.on_change(),
             destinations=destinations,
-            selected_index=self.selected_index
+            selected_index=self.selected_index,
         )
         new_kwargs.update(kwagrs)
         return ft.NavigationBar(*args, **new_kwargs)
@@ -60,13 +65,21 @@ class Navigare(ABC):
     def get_rail(self, *args, **kwagrs):
         new_kwargs = dict(
             on_change=self.on_change(),
-            destinations=[destiny.get_rail() for destiny in self.destinations if destiny.nav_rail]
+            destinations=[
+                destiny.get_rail()
+                for destiny in self.destinations
+                if destiny.nav_rail
+            ],
         )
         new_kwargs.update(kwagrs)
         return ft.NavigationRail(*args, **new_kwargs)
 
     def get_actions(self, button_factory: Callable = None, **kwargs):
-        return [destiny.get_button(self.page, button_factory, **kwargs) for destiny in self.destinations if destiny.action]
+        return [
+            destiny.get_button(self.page, button_factory, **kwargs)
+            for destiny in self.destinations
+            if destiny.action
+        ]
 
 
 @dataclass
@@ -77,8 +90,8 @@ class Fatum(ABC):
     selected_icon: Optional[str] = None
     selected_icon_content: Optional[Control] = None
     label: Optional[str] = None
-    label_content: Optional[Control] = None,
-    padding: ft.PaddingValue = None,
+    label_content: Optional[Control] = (None,)
+    padding: ft.PaddingValue = (None,)
     nav_bar: bool = True
     nav_rail: bool = True
     action: bool = True
@@ -89,10 +102,10 @@ class Fatum(ABC):
             icon_content=self.icon_content,
             selected_icon=self.selected_icon,
             selected_icon_content=self.selected_icon_content,
-            label=self.label
+            label=self.label,
         )
         new_kwargs.update(kwagrs)
-        return ft.NavigationDestination(*args, **new_kwargs)
+        return ft.NavigationBarDestination(*args, **new_kwargs)
 
     def get_rail(self, *args, **kwagrs):
         new_kwargs = dict(
@@ -102,12 +115,14 @@ class Fatum(ABC):
             selected_icon_content=self.selected_icon_content,
             label=self.label,
             label_content=self.label_content,
-            padding=self.padding
+            padding=self.padding,
         )
         new_kwargs.update(kwagrs)
         return ft.NavigationRailDestination(*args, **new_kwargs)
 
-    def get_button(self, page, button_factory: Optional[Callable] = None, **kwargs):
+    def get_button(
+        self, page, button_factory: Optional[Callable] = None, **kwargs
+    ):
 
         def __button_factory(destiny, **button_kwargs):
             selected: bool = destiny.route == page.route
@@ -123,7 +138,7 @@ class Fatum(ABC):
                 selected_icon=destiny.selected_icon,
                 tooltip=destiny.label,
                 selected=selected,
-                on_click=__on_click
+                on_click=__on_click,
             )
             new_kwargs.update(button_kwargs)
             return ft.IconButton(**new_kwargs)
