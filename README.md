@@ -1,9 +1,4 @@
-# Just married!!!
 # Django and Flutter.
-
-## Rapid developing db based app. Zero boilerplate code.
-
-I hate boilerplate code. I hated it all my life. I made so many steps to remove this mental parasites far from me. And now, with Flet and Django I'm so close to get my ideal. For this moment I made as PoC a clone of a standard Flet ToDo application. All what I change is write all directly inside Django. Flet code is run directly on the backend, so we not need any dedicated communication layer. Next what I'm done is generic data table control. This is a simple control able to create a data table for any Django model. All with searching and sorting.
 
 ## Roadmap:
 * [x] Create package for a framework
@@ -33,7 +28,7 @@ I hate boilerplate code. I hated it all my life. I made so many steps to remove 
 
 
 ## Run and usage
-
+Fatum don't exist; instead use Destiny or something like that (i don't remmember the exact name)
 * Let create a Django project:
     ```bash
     pip install Django
